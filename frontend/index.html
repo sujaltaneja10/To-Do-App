@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>To Do App</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <div class="header-left">
+        <p>To Do App</p>
+      </div>
+      <div class="header-right">
+        <button class="signin-header-btn">Log In</button>
+        <button class="signup-header-btn">Sign Up</button>
+        <div id="name-div"></div>
+        <button class="logout-header-btn">Log Out</button>
+      </div>
+    </header>
+
+    <section class="signup-container container">
+      <h3>Welcome to our To Do app</h3>
+      <p>Sign up!</p>
+      <div>
+        <label for="username">Username : </label>
+        <input type="text" id="username" class="signup-username" />
+      </div>
+      <div>
+        <label for="password">Password : </label>
+        <input type="text" id="password" class="signup-password" />
+      </div>
+      <div class="signup-error-div"></div>
+      <button id="submit" class="signup-submit-btn">Submit</button>
+    </section>
+
+    <section class="signin-container container">
+      <h3>Welcome back to our app</h3>
+      <p>Log In!</p>
+      <div>
+        <label for="username">Username : </label>
+        <input type="text" id="username" class="signin-username" />
+      </div>
+      <div>
+        <label for="password">Password : </label>
+        <input type="text" id="password" class="signin-password" />
+      </div>
+      <div class="signin-error-div"></div>
+      <button id="submit" class="signin-submit-btn">Submit</button>
+    </section>
+  </body>
+</html>
