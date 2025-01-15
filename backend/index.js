@@ -3,6 +3,8 @@ const app = express();
 const cors = require("cors");
 require("dotenv").config();
 const PORT = process.env.PORT;
+const path = require("path");
+const frontendPath = path.join(__dirname, "../frontend");
 
 const auth = require("./middlewares/auth.js");
 const signUpController = require("./controllers/signUpController.js");
@@ -10,6 +12,12 @@ const signInController = require("./controllers/signInController.js");
 const todoRouter = require("./routes/todoRouter.js");
 
 app.use(cors());
+app.use(express.static(frontendPath));
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(frontendPath, "index.html"));
+});
+
 app.use(express.json());
 
 // Authentication
@@ -21,11 +29,12 @@ app.get("/me", auth, (req, res) => {
   return res.json(req.user);
 });
 
-app.use("/todos", auth, todoRouter);
+app.use(auth);
+app.use("/todos", todoRouter);
 
 app.use((err, req, res, next) => {
-  return res.status(404).json({
-    message: err.message,
+  return res.status(200).json({
+    error: req.error,
   });
 });
 

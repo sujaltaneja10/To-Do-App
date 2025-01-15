@@ -1,7 +1,11 @@
+import { showTodoScreen } from "./render.js";
+const API_URL = "http://localhost:3000";
+
 const signUpHeaderBtn = document.querySelector(".signup-header-btn");
 const signInHeaderBtn = document.querySelector(".signin-header-btn");
 const logOutHeaderBtn = document.querySelector(".logout-header-btn");
 
+const todosContainer = document.querySelector(".todos-container");
 const signUpContainer = document.querySelector(".signup-container");
 const signInContainer = document.querySelector(".signin-container");
 const signUpErrorDiv = document.querySelector(".signup-error-div");
@@ -21,6 +25,7 @@ function showSignInScreen() {
   logOutHeaderBtn.style.display = "none";
   signUpErrorDiv.style.display = "none";
   signInErrorDiv.style.display = "block";
+  todosContainer.style.display = "none";
 }
 
 function showSignUpScreen() {
@@ -32,11 +37,12 @@ function showSignUpScreen() {
   logOutHeaderBtn.style.display = "none";
   signUpErrorDiv.style.display = "block";
   signInErrorDiv.style.display = "none";
+  todosContainer.style.display = "none";
 }
 
 function logOut() {
   localStorage.removeItem("token");
-  showSignUpScreen();
+  showSignInScreen();
 }
 
 signUpHeaderBtn.addEventListener("click", showSignInScreen);
@@ -47,55 +53,58 @@ signUpSubmitBtn.addEventListener("click", async () => {
   const username = document.querySelector(".signup-username").value;
   const password = document.querySelector(".signup-password").value;
 
-  const response = await fetch("http://localhost:3000/signup/", {
+  const response = await fetch(API_URL + "/signup/", {
     headers: { "Content-type": "application/json" },
     method: "POST",
     body: JSON.stringify({ username, password }),
   });
 
-  if (!response) {
+  const data = await response.json();
+  if (data.message === "User already exists") {
     signUpErrorDiv.textContent = "User already exists";
     signUpErrorDiv.style.display = "block";
     return;
   }
 
-  const data = await response.json();
-  console.log(data);
+  signUpErrorDiv.style.display = "none";
+  getUserInfo();
 });
 
 signInSubmitBtn.addEventListener("click", async () => {
   const username = document.querySelector(".signin-username").value;
   const password = document.querySelector(".signin-password").value;
 
-  const response = await fetch("http://localhost:3000/signin/", {
+  const response = await fetch(API_URL + "/signin/", {
     headers: { "content-type": "application/json" },
     method: "POST",
     body: JSON.stringify({ username, password }),
   });
 
-  if (!response) {
+  const data = await response.json();
+
+  if (data.message === "Invalid username or password") {
     signInErrorDiv.textContent = "Invalid username or password";
     signInErrorDiv.style.display = "block";
     return;
   }
 
-  const data = await response.json();
-  console.log(data);
-
   const token = response.headers.get("token");
   localStorage.setItem("token", token);
+
+  signInErrorDiv.style.display = "none";
 
   getUserInfo();
 });
 
 async function getUserInfo() {
   if (!localStorage.getItem("token")) {
+    showSignInScreen();
     return;
   }
 
   const token = localStorage.getItem("token");
 
-  const response = await fetch("http://localhost:3000/me/", {
+  const response = await fetch(API_URL + "/me/", {
     headers: {
       "content-type": "application/json",
       token: token,
@@ -115,12 +124,13 @@ function showUserScreen(username) {
   nameDiv.textContent = "Hello, " + username.toUpperCase();
   nameDiv.style.display = "block";
 
+  todosContainer.style.display = "block";
   signInContainer.style.display = "none";
   signUpContainer.style.display = "none";
   signInErrorDiv.style.display = "none";
   signUpErrorDiv.style.display = "none";
 
-  //   renderTodos();
+  showTodoScreen();
 }
 
 getUserInfo();

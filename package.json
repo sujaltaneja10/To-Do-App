@@ -6,7 +6,7 @@
     "express-async-handler": "^1.2.0",
     "jsonwebtoken": "^9.0.2"
   },
-  "name": "6.1-todo",
+  "name": "to-do-app",
   "version": "1.0.0",
   "main": "/backend/index.js",
   "devDependencies": {},
