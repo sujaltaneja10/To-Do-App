@@ -1,5 +1,5 @@
 export { createTodo, updateTodo, fetchTodos, deleteTodo };
-const TODO_URL = "http://localhost:3000/todos/";
+const TODO_URL = "https://to-do-app-yt61.onrender.com/todos/";
 
 async function createTodo({ title, desc }) {
   const response = await fetch(TODO_URL, {
