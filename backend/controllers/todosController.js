@@ -1,9 +1,9 @@
 const todos = require("../db/todos.json");
-const fs = require("fs/promises");
+const fs = require("fs");
 const eventHandler = require("express-async-handler");
 
-function updateTodos() {
-  fs.writeFile(__dirname + "/../db/todos.json", JSON.stringify(todos));
+async function updateTodos() {
+  fs.writeFileSync(__dirname + "/../db/todos.json", JSON.stringify(todos));
 }
 
 function createUser(username, password) {
@@ -37,6 +37,7 @@ async function createTodo(req, res, next) {
   updateTodos();
 
   return res.json({
+    todo: todo,
     message: "To do created",
   });
 }
@@ -58,13 +59,12 @@ const updateTodo = eventHandler(async function (req, res, next) {
   updateTodos();
 
   return res.json({
+    todo: todo,
     message: "Updated todo",
   });
 });
 
 async function deleteTodo(req, res, next) {
-  console.log(req.user);
-  console.log(req.user.todos);
   req.user.todos = [];
 
   updateTodos();
@@ -76,6 +76,7 @@ async function deleteTodo(req, res, next) {
 
 const deleteTodoById = eventHandler(async function (req, res, next) {
   const id = req.params.id;
+
   const index = req.user.todos.findIndex((u) => u.id == id);
 
   if (index === -1) {
@@ -84,7 +85,7 @@ const deleteTodoById = eventHandler(async function (req, res, next) {
 
   req.user.todos.splice(index, 1);
 
-  updateTodos();
+  const todos = await updateTodos();
 
   return res.json({
     message: "Todo deleted",
